@@ -1,0 +1,11 @@
+{
+  "overview": {
+    "lastUpdateTime": "2025-10-07 11:00:14",
+    "lifeTimeData": { "energy": 1.511646e7, "revenue": 0.0 },
+    "lastYearData": { "energy": 876057.0 },
+    "lastMonthData": { "energy": 38313.0 },
+    "lastDayData": { "energy": 544.0 },
+    "currentPower": { "power": 431.809 },
+    "measuredBy": ""
+  }
+}

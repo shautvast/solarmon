@@ -1,0 +1,40 @@
+{
+  "sites": {
+    "count": 1,
+    "site": [
+      {
+        "id": 2193535,
+        "name": "S. Hautvast",
+        "accountId": 30166,
+        "status": "Active",
+        "peakPower": 3.51,
+        "lastUpdateTime": "2025-10-07",
+        "installationDate": "2021-04-13",
+        "ptoDate": null,
+        "notes": "",
+        "type": "Optimizers & Inverters",
+        "location": {
+          "country": "Netherlands",
+          "city": "Amsterdam",
+          "address": "A. Moenstraat, 22",
+          "address2": "",
+          "zip": "1022 KJ",
+          "timeZone": "Europe/Amsterdam",
+          "countryCode": "NL"
+        },
+        "primaryModule": {
+          "manufacturerName": "Hyundai Heavy Industries",
+          "modelName": "HiE-S390VG",
+          "maximumPower": 390.0,
+          "temperatureCoef": -0.34
+        },
+        "uris": {
+          "DETAILS": "/site/2193535/details",
+          "DATA_PERIOD": "/site/2193535/dataPeriod",
+          "OVERVIEW": "/site/2193535/overview"
+        },
+        "publicSettings": { "isPublic": false }
+      }
+    ]
+  }
+}
