@@ -35,7 +35,7 @@ struct AppState {
 }
 
 #[tokio::main]
-async fn main() -> anyhow::Result<()> {
+async fn main() -> axum::response::Result<()> {
     dotenv().ok();
     let bind_addr = env::var("BIND_ADDR").expect("BIND_ADDR");
 
@@ -59,12 +59,11 @@ async fn main() -> anyhow::Result<()> {
             "/static",
             ServiceBuilder::new().service(ServeDir::new("static")),
         );
-    // .layer(LiveReloadLayer::new());
 
     let listener = tokio::net::TcpListener::bind(bind_addr).await.unwrap();
     println!("server on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
-    report("started");
+    report("started").await?;
     Ok(())
 }
 
