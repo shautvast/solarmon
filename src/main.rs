@@ -1,4 +1,7 @@
-use std::sync::{Arc, RwLock};
+use std::{
+    env,
+    sync::{Arc, LazyLock, RwLock},
+};
 
 use axum::{
     Json, Router,
@@ -11,7 +14,15 @@ use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
 use tower::ServiceBuilder;
 use tower_http::services::ServeDir;
-// use tower_livereload::LiveReloadLayer;
+
+pub const PUSHOVER_USER_ID: LazyLock<String> =
+    LazyLock::new(|| env::var("PUSHOVER_USER_ID").unwrap());
+pub const PUSHOVER_API_KEY: LazyLock<String> =
+    LazyLock::new(|| env::var("PUSHOVER_API_KEY").unwrap());
+pub const SOLAREDGE_SITE_ID: LazyLock<String> =
+    LazyLock::new(|| env::var("SOLAREDGE_SITE_ID").unwrap());
+pub const SOLAREDGE_API_KEY: LazyLock<String> =
+    LazyLock::new(|| env::var("SOLAREDGE_API_KEY").unwrap());
 
 type CachedAppState = Arc<RwLock<AppState>>;
 
@@ -25,6 +36,8 @@ struct AppState {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     dotenv().ok();
+    let bind_addr = env::var("BIND_ADDR").expect("BIND_ADDR");
+
     let app_state: CachedAppState = Arc::new(RwLock::new(AppState {
         values: EnergyResponse {
             energy: Energy {
@@ -47,7 +60,7 @@ async fn main() -> anyhow::Result<()> {
         );
     // .layer(LiveReloadLayer::new());
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    let listener = tokio::net::TcpListener::bind(bind_addr).await.unwrap();
     println!("server on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
     Ok(())
@@ -105,13 +118,10 @@ async fn check_energy(
     Ok(())
 }
 async fn report() -> axum::response::Result<(), ErrorResponse> {
-    let user_id = std::env::var("PUSHOVER_USER_ID").unwrap();
-    let api_key = std::env::var("PUSHOVER_API_KEY").unwrap();
-
     let url = "https://api.pushover.net/1/messages.json";
     let form = reqwest::multipart::Form::new()
-        .text("token", api_key)
-        .text("user", user_id)
+        .text("token", PUSHOVER_API_KEY.to_string())
+        .text("user", PUSHOVER_USER_ID.to_string())
         .text("message", "No energy measured on the solar panels");
 
     let client = reqwest::Client::new();
@@ -129,15 +139,13 @@ async fn fetch_energy_response(state: CachedAppState) -> axum::response::Result<
     let now = Utc::now();
     if now.signed_duration_since(reset_ts).as_seconds_f32() > 300.0 {
         state.write().unwrap().cache_reset = now;
-        let site_id = std::env::var("SOLAREDGE_SITE_ID").unwrap();
-        let api_key = std::env::var("SOLAREDGE_API_KEY").unwrap();
 
         let url = format!(
             "https://monitoringapi.solaredge.com/site/{}/energy?timeUnit=QUARTER_OF_AN_HOUR&endDate={}&startDate={}&api_key={}",
-            site_id,
+            SOLAREDGE_SITE_ID.as_str(),
             now.date_naive(),
             now.date_naive(),
-            api_key,
+            SOLAREDGE_API_KEY.as_str(),
         );
 
         let mut energy_response = reqwest::get(url)
