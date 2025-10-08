@@ -62,8 +62,8 @@ async fn main() -> axum::response::Result<()> {
 
     let listener = tokio::net::TcpListener::bind(bind_addr).await.unwrap();
     println!("server on {}", listener.local_addr().unwrap());
-    axum::serve(listener, app).await.unwrap();
     report("started").await?;
+    axum::serve(listener, app).await.unwrap();
     Ok(())
 }
 
@@ -123,8 +123,8 @@ async fn report(message: &str) -> axum::response::Result<(), ErrorResponse> {
     let form = reqwest::multipart::Form::new()
         .text("token", PUSHOVER_API_KEY.to_string())
         .text("user", PUSHOVER_USER_ID.to_string())
-        .text("message", message.to_string())
-        .text("url", CALL_HOME.to_string());
+        .text("message", message.to_string());
+    // .text("url", CALL_HOME.to_string());
 
     let client = reqwest::Client::new();
     let _ = client
