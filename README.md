@@ -7,11 +7,11 @@
 * clone this repo
 * create .env file that contains
   * SOLAREDGE_API_KEY
-** SOLAREDGE_SITE_ID
-** PUSHOVER_USER_ID
-** PUSHOVER_API_KEY
-** BIND_ADDR eg. 0.0.0.0:3000
-** CALL_HOME url to include in the pushover notification
+  * SOLAREDGE_SITE_ID
+  * PUSHOVER_USER_ID
+  * PUSHOVER_API_KEY
+  * BIND_ADDR eg. 0.0.0.0:3000
+  * CALL_HOME url to include in the pushover notification
 * cargo run
 
 After successful startup a informational message is sent to pushover.
