@@ -6,7 +6,7 @@
 **start**
 * clone this repo
 * create .env file that contains
-** SOLAREDGE_API_KEY
+  * SOLAREDGE_API_KEY
 ** SOLAREDGE_SITE_ID
 ** PUSHOVER_USER_ID
 ** PUSHOVER_API_KEY
