@@ -1,7 +1,8 @@
 # solarmon
 * charts solaredge inverter data using its REST api like their app also does
-* sends alerts if at 12:00 no output is measured. Mine had died without a word last summer...
+* sends alerts if around 12:00 no output is measured. Mine had died without a word last summer...
 * alerting on your phone using pushover
+* solaredge api has at least 15 mins resolution. Its response is cached to prevent overloading their server.
 
 **start**
 * clone this repo
