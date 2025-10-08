@@ -123,8 +123,8 @@ async fn report(message: &str) -> axum::response::Result<(), ErrorResponse> {
     let form = reqwest::multipart::Form::new()
         .text("token", PUSHOVER_API_KEY.to_string())
         .text("user", PUSHOVER_USER_ID.to_string())
-        .text("message", message.to_string());
-    // .text("url", CALL_HOME.to_string());
+        .text("message", message.to_string())
+        .text("url", CALL_HOME.to_string());
 
     let client = reqwest::Client::new();
     let _ = client
