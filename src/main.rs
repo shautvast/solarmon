@@ -23,6 +23,7 @@ pub const SOLAREDGE_SITE_ID: LazyLock<String> =
     LazyLock::new(|| env::var("SOLAREDGE_SITE_ID").unwrap());
 pub const SOLAREDGE_API_KEY: LazyLock<String> =
     LazyLock::new(|| env::var("SOLAREDGE_API_KEY").unwrap());
+pub const CALL_HOME: LazyLock<String> = LazyLock::new(|| env::var("CALL_HOME").unwrap());
 
 type CachedAppState = Arc<RwLock<AppState>>;
 
@@ -63,6 +64,7 @@ async fn main() -> anyhow::Result<()> {
     let listener = tokio::net::TcpListener::bind(bind_addr).await.unwrap();
     println!("server on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
+    report("started");
     Ok(())
 }
 
@@ -106,7 +108,7 @@ async fn check_energy(
             .flatten();
         if let Some(energy_at_1200) = energy_at_1200 {
             if energy_at_1200 == 0.0 {
-                report().await?;
+                report("No energy measured on the solar panels").await?;
             }
         }
         state.write().unwrap().day_checked = true;
@@ -117,12 +119,13 @@ async fn check_energy(
     }
     Ok(())
 }
-async fn report() -> axum::response::Result<(), ErrorResponse> {
+async fn report(message: &str) -> axum::response::Result<(), ErrorResponse> {
     let url = "https://api.pushover.net/1/messages.json";
     let form = reqwest::multipart::Form::new()
         .text("token", PUSHOVER_API_KEY.to_string())
         .text("user", PUSHOVER_USER_ID.to_string())
-        .text("message", "No energy measured on the solar panels");
+        .text("message", message.to_string())
+        .text("url", CALL_HOME.to_string());
 
     let client = reqwest::Client::new();
     let _ = client
