@@ -1,6 +1,6 @@
 # solarmon
 * charts solaredge inverter data using its REST api like their app also does
-* sends alerts if at 12:00 no output is measured
+* sends alerts if at 12:00 no output is measured. Mine had died without a word last summer...
 * alerting on your phone using pushover
 
 **start**
